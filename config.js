@@ -11,13 +11,15 @@
 //    que o Firebase mostrar em:
 //      Console → ⚙ Configurações do projeto → Seus apps → Web → SDK
 // -----------------------------------------------------------------------------
-export const firebaseConfig = {
-  apiKey:      "COLE_AQUI",
-  authDomain:  "COLE_AQUI",
-  databaseURL: "COLE_AQUI",   // precisa terminar com .firebasedatabase.app
-  projectId:   "COLE_AQUI",
-  appId:       "COLE_AQUI"
-};
+const firebaseConfig = {
+    apiKey: "AIzaSyA6s_Auach16SoWUZfI9CxyXMiuhuJRb0E",
+    authDomain: "requisicao-prova-cfc.firebaseapp.com",
+    databaseURL: "https://requisicao-prova-cfc-default-rtdb.firebaseio.com",
+    projectId: "requisicao-prova-cfc",
+    storageBucket: "requisicao-prova-cfc.firebasestorage.app",
+    messagingSenderId: "659648714425",
+    appId: "1:659648714425:web:0cec8977f220233fe1ed68"
+  };
 
 // -----------------------------------------------------------------------------
 // 2) TURMAS DO COLÉGIO
