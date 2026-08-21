@@ -1,6 +1,6 @@
 import { el, definirTitulo, mostrarVoltar, snackbar, aviso } from "../ui.js";
 import { identidade, apelido } from "../identidade.js";
-import { registrarProfessor, diaAtual } from "../dados.js";
+import { registrarProfessor, diaAtual, explicarErro } from "../dados.js";
 import { desbloquearAudio } from "../alerta.js";
 import { ir } from "../router.js";
 
@@ -60,7 +60,7 @@ export function montar(app) {
       console.error(erro);
       botao.disabled = false;
       botao.textContent = "Abrir meu painel";
-      app.prepend(aviso("perigo", "Não deu para entrar na lista. Confira a conexão e tente de novo."));
+      app.prepend(aviso("perigo", "Não deu para entrar na lista. " + explicarErro(erro)));
     }
   });
 

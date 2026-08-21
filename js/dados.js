@@ -36,10 +36,21 @@ export async function iniciarDados() {
       const fb = await import("./firebase.js");
       back = await fb.criarBackendFirebase(firebaseConfig);
       definirDeslocamento(await back.deslocamentoDoServidor());
+
+      // Sonda de permissão. Sem ela o site parece pronto — pílula verde,
+      // nenhuma faixa — e só revela que as regras não foram publicadas quando
+      // o professor tenta entrar na lista, no meio da prova. Descobrir isso
+      // na hora de abrir o site é a diferença entre um susto e um problema.
+      try {
+        await back.lerUmaVez(`dias/${formatarDia()}/professores`);
+      } catch (erro) {
+        back = null;
+        throw erro;
+      }
     }
   } catch (erro) {
     console.error("Firebase indisponível:", erro);
-    motivoDemo = erro?.message || String(erro);
+    motivoDemo = explicarErro(erro);
     falhou = true;
   }
 
@@ -55,6 +66,31 @@ export function modoAtual()  { return back ? back.modo : "demo"; }
 export function diaAtual()   { return dia; }
 export function porqueDemo() { return motivoDemo; }
 export function uidAtual()   { return back?.uid || "(anônimo local)"; }
+
+/**
+ * Traduz o erro do Firebase para algo acionável.
+ *
+ * O SDK devolve só "Permission denied", e a mensagem genérica que existia
+ * aqui antes ("confira a conexão") mandava a pessoa olhar justamente onde o
+ * problema não está: numa recusa de permissão a conexão está perfeita. Quem
+ * monta isto sozinho perde uma manhã por causa dessa diferença.
+ */
+export function explicarErro(erro) {
+  const texto = String(erro?.code || "") + " " + String(erro?.message || erro || "");
+
+  if (/permission[_ ]denied/i.test(texto)) {
+    return "O Firebase recusou o acesso. Quase sempre é porque as regras do banco ainda não " +
+           "foram publicadas: no console do Firebase, abra Realtime Database → aba Regras, " +
+           "cole o conteúdo do arquivo regras-firebase.json e clique em Publicar.";
+  }
+  if (/network|unavailable|offline|timeout|failed to fetch/i.test(texto)) {
+    return "Sem conexão com o servidor. Confira a internet e tente de novo.";
+  }
+  if (/disconnected|max retries/i.test(texto)) {
+    return "A conexão com o servidor caiu. Tente de novo em alguns segundos.";
+  }
+  return "Não deu certo. Detalhe técnico: " + (erro?.message || erro);
+}
 
 const raizProfessores = () => `dias/${dia}/professores`;
 const raizChamados    = (profId) => `dias/${dia}/chamados/${profId}`;

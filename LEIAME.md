@@ -48,8 +48,15 @@ simultâneas e o colégio usa algo perto de 30.
 3. No menu lateral: **Criar → Realtime Database → Criar banco de dados**.
    - Local: **us-central1**.
    - Modo: **iniciar no modo bloqueado**.
-4. Abra a aba **Regras** desse banco, apague tudo o que estiver lá, cole o conteúdo do arquivo
-   **`regras-firebase.json`** deste repositório e clique em **Publicar**.
+4. **O passo que mais gente pula.** Abra a aba **Regras** desse banco, apague tudo o que
+   estiver lá, cole o conteúdo do arquivo **`regras-firebase.json`** deste repositório e clique
+   em **Publicar**.
+
+   O banco criado no passo anterior nasce em modo bloqueado, ou seja, **recusa tudo**. Sem
+   publicar estas regras o site abre, mostra "conectado" e mesmo assim nenhuma ação funciona.
+   Se isso acontecer, você vai ver uma faixa vermelha explicando exatamente isto. Confira também
+   que o botão **Publicar** ficou cinza depois de clicado — enquanto ele estiver azul, a
+   alteração não foi salva.
 5. No menu lateral: **Authentication → Vamos começar → aba Sign-in method → Anônimo → Ativar →
    Salvar**.
 6. Ainda em Authentication: **Settings → Domínios autorizados → Adicionar domínio** e escreva
@@ -164,13 +171,20 @@ está, que dia está usando e se o som foi liberado.
 **Faixa vermelha “NÃO CONECTOU”.** As chaves estão preenchidas mas o site não falou com o Firebase.
 A própria faixa diz o motivo. Os três causadores, em ordem de frequência:
 
-1. O `export` sumiu da linha do `firebaseConfig` no `config.js` (veja o passo 8 acima).
-2. O endereço do site não está autorizado no Firebase — vá em **Authentication → Settings →
-   Domínios autorizados** e adicione `SEU-USUARIO.github.io`.
-3. O login anônimo não foi ativado — **Authentication → Sign-in method → Anônimo → Ativar**.
+1. **As regras não foram publicadas** (passo 4 da instalação). É a causa mais comum de longe:
+   o banco nasce recusando tudo. Cole o `regras-firebase.json` em Realtime Database → Regras e
+   clique em Publicar.
+2. O `export` sumiu da linha do `firebaseConfig` no `config.js` (veja o passo 8 acima).
+3. O endereço do site não está autorizado — **Authentication → Settings → Domínios autorizados**,
+   adicione `SEU-USUARIO.github.io`.
+4. O login anônimo não foi ativado — **Authentication → Sign-in method → Anônimo → Ativar**.
 
 Enquanto a faixa estiver vermelha, **os chamados não estão sendo compartilhados**: cada aparelho vê
 só o que ele mesmo criou. Não use assim no dia da prova.
+
+**Diz “conectado” em verde, mas toda ação dá erro.** Era o comportamento antigo quando as regras
+não estavam publicadas. A pílula verde só quer dizer que o site alcançou o servidor — não que ele
+tem permissão. Hoje o site testa a permissão assim que abre e mostra a faixa vermelha na hora.
 
 **Faixa laranja “MODO DEMO”.** As chaves ainda não foram preenchidas. Normal antes de configurar,
 serve para testar; também não compartilha nada entre aparelhos.

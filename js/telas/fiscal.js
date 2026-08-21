@@ -2,7 +2,7 @@ import { el, definirTitulo, mostrarVoltar, snackbar, aviso, vazio } from "../ui.
 import { identidade } from "../identidade.js";
 import { TURMAS, OPCOES } from "../configuracao.js";
 import { tempoDecorrido } from "../dia.js";
-import { ouvirProfessoresAtivos, ouvirChamados, criarChamado, reforcarChamado } from "../dados.js";
+import { ouvirProfessoresAtivos, ouvirChamados, criarChamado, reforcarChamado, explicarErro } from "../dados.js";
 import { ir } from "../router.js";
 
 export function montar(app) {
@@ -179,7 +179,7 @@ export function montar(app) {
     } catch (erro) {
       clearTimeout(relogio);
       console.error(erro);
-      caixaAcao.prepend(aviso("perigo", "Não deu para enviar. Confira a conexão e tente de novo."));
+      caixaAcao.prepend(aviso("perigo", "Não deu para enviar. " + explicarErro(erro)));
     } finally {
       enviando = false;
       desenharAcao();

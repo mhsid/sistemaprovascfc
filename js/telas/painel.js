@@ -3,7 +3,7 @@ import { identidade } from "../identidade.js";
 import { TURMAS, OPCOES } from "../configuracao.js";
 import { tempoDecorrido, hora, agora } from "../dia.js";
 import {
-  ouvirChamados, ouvirProfessor, marcarAtendido, reabrirChamado, encerrarDia
+  ouvirChamados, ouvirProfessor, marcarAtendido, reabrirChamado, encerrarDia, explicarErro
 } from "../dados.js";
 import {
   alertarChamado, bip, vibrar, piscarTitulo, pararTitulo,
@@ -216,7 +216,7 @@ export function montar(app, { profId }) {
           classe: "botao botao-secundario", texto: "Reabrir chamado",
           aoTocar: async () => {
             try { await reabrirChamado(profId, c.id); aba = "fila"; snackbar("Chamado devolvido para a fila."); }
-            catch { snackbar("Não deu para reabrir. Confira a conexão."); }
+            catch (erro) { snackbar("Não deu para reabrir. " + explicarErro(erro), { segundos: 10 }); }
           }
         })
       ]));
@@ -255,12 +255,12 @@ export function montar(app, { profId }) {
         segundos: OPCOES.segundosDesfazer,
         aoAcionar: async () => {
           try { await reabrirChamado(profId, c.id); }
-          catch { snackbar("Não deu para desfazer. Confira a conexão."); }
+          catch (erro) { snackbar("Não deu para desfazer. " + explicarErro(erro), { segundos: 10 }); }
         }
       });
     } catch (erro) {
       console.error(erro);
-      snackbar("Não deu para dar baixa. Confira a conexão e tente de novo.", { segundos: 6 });
+      snackbar("Não deu para dar baixa. " + explicarErro(erro), { segundos: 10 });
     }
   }
 
@@ -278,7 +278,7 @@ export function montar(app, { profId }) {
       ir("/");
     } catch (erro) {
       console.error(erro);
-      snackbar("Não deu para encerrar. Confira a conexão e tente de novo.", { segundos: 6 });
+      snackbar("Não deu para encerrar. " + explicarErro(erro), { segundos: 10 });
     }
   }
 
