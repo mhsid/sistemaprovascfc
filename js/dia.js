@@ -4,7 +4,7 @@
 // ficaria invisível para todos os colegas, sem nenhuma mensagem de erro. Por
 // isso o horário de referência vem do servidor sempre que ele está disponível.
 
-import { OPCOES } from "../config.js";
+import { OPCOES } from "./configuracao.js";
 
 let deslocamento = 0; // milissegundos de diferença entre servidor e aparelho
 

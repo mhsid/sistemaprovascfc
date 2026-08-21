@@ -10,8 +10,12 @@
 //    testar. Para valer no dia da prova, siga o LEIAME.md e cole aqui o bloco
 //    que o Firebase mostrar em:
 //      Console → ⚙ Configurações do projeto → Seus apps → Web → SDK
+//
+//    ATENÇÃO: a linha abaixo PRECISA começar com "export const". O console do
+//    Firebase mostra o bloco escrito só como "const firebaseConfig = {" — se
+//    você colar por cima e o "export" sumir, o site para de abrir.
 // -----------------------------------------------------------------------------
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyA6s_Auach16SoWUZfI9CxyXMiuhuJRb0E",
     authDomain: "requisicao-prova-cfc.firebaseapp.com",
     databaseURL: "https://requisicao-prova-cfc-default-rtdb.firebaseio.com",

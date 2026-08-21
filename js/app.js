@@ -1,6 +1,7 @@
 // Ponto de entrada: escolhe o backend, descobre o dia, liga o roteador.
 
-import { iniciarDados, ouvirConexao, diaAtual } from "./dados.js";
+import { iniciarDados, ouvirConexao, diaAtual, houveFalha } from "./dados.js";
+import { carregarConfiguracao } from "./configuracao.js";
 import { registrar, iniciarRoteador, ir, caminhoAtual } from "./router.js";
 import { definirConexao } from "./ui.js";
 import { identidade } from "./identidade.js";
@@ -15,11 +16,21 @@ import * as painel   from "./telas/painel.js";
 import * as ajustes  from "./telas/ajustes.js";
 
 async function principal() {
+  await carregarConfiguracao();
   const { modo, motivoDemo } = await iniciarDados();
 
   if (modo === "demo") {
-    document.getElementById("faixa-demo").hidden = false;
-    definirConexao("demo", "demo");
+    const faixa = document.getElementById("faixa-demo");
+    faixa.hidden = false;
+    if (houveFalha()) {
+      // Configurou e não conectou: isso precisa parecer um defeito, não um
+      // aviso de rotina, senão o professor confia num painel que ninguém vê.
+      faixa.classList.add("faixa-erro");
+      faixa.textContent = "NÃO CONECTOU — " + motivoDemo + " Os chamados não estão sendo compartilhados.";
+      definirConexao("offline", "erro");
+    } else {
+      definirConexao("demo", "demo");
+    }
     if (motivoDemo) console.warn("Modo demo:", motivoDemo);
   } else {
     ouvirConexao((ligado) => {

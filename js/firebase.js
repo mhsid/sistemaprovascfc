@@ -11,15 +11,6 @@ import { getAuth, signInAnonymously, onAuthStateChanged }
 import { getDatabase, ref, get, set, update, push, onValue, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
-/** true quando o config.js ainda está com os "COLE_AQUI" de fábrica. */
-export function configPreenchida(cfg) {
-  const obrigatorios = ["apiKey", "authDomain", "databaseURL", "projectId", "appId"];
-  return obrigatorios.every((c) => {
-    const v = cfg?.[c];
-    return typeof v === "string" && v.length > 0 && !v.startsWith("COLE_AQUI");
-  });
-}
-
 export async function criarBackendFirebase(cfg) {
   const app = initializeApp(cfg);
   const auth = getAuth(app);

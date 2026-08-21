@@ -59,8 +59,16 @@ simultâneas e o colégio usa algo perto de 30.
 7. Vá em **⚙ Configurações do projeto → Seus apps →** ícone **`</>`** (Web) → apelido `site` →
    **não** marque Hosting → **Registrar app**.
 8. Copie o bloco `firebaseConfig` que aparecer e cole em **`config.js`**, no lugar dos
-   `"COLE_AQUI"`. Confira que o campo `databaseURL` existe; se não vier, pegue o endereço na aba
-   Realtime Database (termina em `.firebasedatabase.app`).
+   `"COLE_AQUI"`.
+
+   > **Cuidado com o `export`.** O console do Firebase mostra o bloco começando com
+   > `const firebaseConfig = {`. No `config.js` a linha precisa começar com
+   > **`export const firebaseConfig = {`**. Se você colar por cima e o `export` sumir, o site
+   > abre avisando o erro em letras vermelhas — é só devolver a palavra e enviar de novo.
+
+   Confira também que o campo `databaseURL` está no bloco. Se ele não vier junto, copie o
+   endereço no topo da aba Realtime Database: termina em `.firebaseio.com` quando o banco fica em
+   us-central1, ou em `.firebasedatabase.app` nas demais regiões.
 
 ## Instalação — parte 2: GitHub Pages (~3 minutos)
 
@@ -145,3 +153,32 @@ arquivos por até 10 minutos. Peça para fechar e reabrir depois desse tempo.
 
 **Precisa instalar alguma coisa?** Não. Não há npm, build nem GitHub Actions — são arquivos
 estáticos servidos direto do repositório.
+
+---
+
+## Quando alguma coisa não funciona
+
+Antes de tudo, abra **Ajustes** dentro do próprio site: o diagnóstico no rodapé diz em que modo ele
+está, que dia está usando e se o som foi liberado.
+
+**Faixa vermelha “NÃO CONECTOU”.** As chaves estão preenchidas mas o site não falou com o Firebase.
+A própria faixa diz o motivo. Os três causadores, em ordem de frequência:
+
+1. O `export` sumiu da linha do `firebaseConfig` no `config.js` (veja o passo 8 acima).
+2. O endereço do site não está autorizado no Firebase — vá em **Authentication → Settings →
+   Domínios autorizados** e adicione `SEU-USUARIO.github.io`.
+3. O login anônimo não foi ativado — **Authentication → Sign-in method → Anônimo → Ativar**.
+
+Enquanto a faixa estiver vermelha, **os chamados não estão sendo compartilhados**: cada aparelho vê
+só o que ele mesmo criou. Não use assim no dia da prova.
+
+**Faixa laranja “MODO DEMO”.** As chaves ainda não foram preenchidas. Normal antes de configurar,
+serve para testar; também não compartilha nada entre aparelhos.
+
+**Página abre em branco, só com o cabeçalho.** Significa que o navegador não conseguiu carregar o
+JavaScript. Confira em **Settings → Pages** se a branch e a pasta (`/ (root)`) estão certas, e
+espere um ou dois minutos após o envio. Para ver o motivo exato num computador: `F12` → aba
+**Console**.
+
+**Um professor está vendo a versão antiga.** O GitHub Pages guarda os arquivos por até 10 minutos.
+Peça para fechar e reabrir o site depois desse tempo.

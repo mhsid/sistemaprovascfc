@@ -1,6 +1,6 @@
 import { el, definirTitulo, mostrarVoltar, snackbar, aviso, vazio } from "../ui.js";
 import { identidade } from "../identidade.js";
-import { TURMAS, OPCOES } from "../../config.js";
+import { TURMAS, OPCOES } from "../configuracao.js";
 import { tempoDecorrido, hora, agora } from "../dia.js";
 import {
   ouvirChamados, ouvirProfessor, marcarAtendido, reabrirChamado, encerrarDia

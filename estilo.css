@@ -52,6 +52,7 @@ body {
 
 .faixa[hidden] { display: none; }
 .faixa-demo  { background: var(--alerta); color: #2a1c00; }
+.faixa-erro  { background: var(--perigo); color: #fff; text-align: left; line-height: 1.4; }
 
 .faixa-audio {
   background: var(--perigo);

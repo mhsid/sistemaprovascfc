@@ -10,37 +10,46 @@
 // "chamados" é irmão de "professores", e não filho, porque o fiscal precisa
 // ouvir só a lista de nomes (um nó minúsculo) sem baixar a fila de todo mundo.
 
-import { firebaseConfig } from "../config.js";
+import { firebaseConfig, configPreenchida, problemaConfig } from "./configuracao.js";
 import { criarBackendDemo } from "./demo.js";
 import { definirDeslocamento, formatarDia } from "./dia.js";
 
 let back = null;   // backend em uso
 let dia = "";      // "AAAA-MM-DD" fixado no início da sessão
 let motivoDemo = "";
+let falhou = false;  // configurado, mas não deu para conectar
 
 /**
- * Escolhe o backend e descobre o dia. Cai no modo demo tanto quando o config
- * ainda não foi preenchido quanto quando o Firebase falha — uma configuração
- * errada degrada para algo utilizável em vez de virar tela branca.
+ * Escolhe o backend e descobre o dia.
+ *
+ * A distinção importante é entre "ainda não configuraram" e "configuraram e
+ * quebrou". O primeiro caso é o modo demo legítimo. O segundo precisa gritar:
+ * cair calado no demo faria o professor achar que está tudo certo enquanto
+ * ninguém enxerga os chamados de ninguém — pior do que o site não abrir.
  */
 export async function iniciarDados() {
   try {
-    const fb = await import("./firebase.js");
-    if (!fb.configPreenchida(firebaseConfig)) {
-      motivoDemo = "O config.js ainda está sem as chaves do Firebase.";
+    if (!configPreenchida) {
+      motivoDemo = problemaConfig || "O config.js ainda está sem as chaves do Firebase.";
+      falhou = !!problemaConfig;
     } else {
+      const fb = await import("./firebase.js");
       back = await fb.criarBackendFirebase(firebaseConfig);
       definirDeslocamento(await back.deslocamentoDoServidor());
     }
   } catch (erro) {
     console.error("Firebase indisponível:", erro);
     motivoDemo = erro?.message || String(erro);
+    falhou = true;
   }
 
   if (!back) back = criarBackendDemo();
   dia = formatarDia();
-  return { modo: back.modo, dia, motivoDemo };
+  return { modo: back.modo, dia, motivoDemo, falhou };
 }
+
+/** true quando o site deveria estar conectado e não está. */
+export function houveFalha() { return falhou; }
 
 export function modoAtual()  { return back ? back.modo : "demo"; }
 export function diaAtual()   { return dia; }

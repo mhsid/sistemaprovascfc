@@ -1,6 +1,6 @@
 import { el, definirTitulo, mostrarVoltar, snackbar, aviso } from "../ui.js";
 import { identidade } from "../identidade.js";
-import { modoAtual, diaAtual, porqueDemo, uidAtual } from "../dados.js";
+import { modoAtual, diaAtual, porqueDemo, uidAtual, houveFalha } from "../dados.js";
 import { alertarChamado, desbloquearAudio, audioLiberado, audioSuportado, telaSuportada } from "../alerta.js";
 import { ir } from "../router.js";
 
@@ -33,8 +33,12 @@ export function montar(app) {
     }),
 
     el("h2", { texto: "Diagnóstico" }),
-    modoAtual() === "demo" ? aviso("alerta", "MODO DEMO: " + (porqueDemo() || "sem chaves do Firebase") +
-      " Os chamados ficam só neste aparelho e ninguém mais os vê.") : null,
+    modoAtual() === "demo"
+      ? aviso(houveFalha() ? "perigo" : "alerta",
+              (houveFalha() ? "NÃO CONECTOU: " : "MODO DEMO: ") +
+              (porqueDemo() || "sem chaves do Firebase") +
+              " Os chamados ficam só neste aparelho e ninguém mais os vê.")
+      : null,
     el("p", { classe: "diag", html: [
       "Modo: <strong>" + modoAtual() + "</strong>",
       "Dia em uso: <strong>" + diaAtual() + "</strong>",
